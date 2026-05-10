@@ -2,33 +2,59 @@
 <html>
 
 <head>
+
     <title>Create Task</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
 </head>
 
-<body>
+<body class="bg-light">
 
-<h1>Create Task</h1>
+<div class="container mt-5">
 
-<form method="POST">
+    <div class="row justify-content-center">
 
-    <input type="text" name="title" placeholder="Task Title">
+        <div class="col-md-6">
 
-    <br><br>
+            <div class="card shadow p-4">
 
-    <input type="text" name="assigned_to" placeholder="Assigned User">
+                <h2 class="text-center mb-4">Create Task</h2>
 
-    <br><br>
+                <form method="POST">
 
-    <select name="status">
-        <option>Pending</option>
-        <option>Completed</option>
-    </select>
+                    <input type="text"
+                           name="title"
+                           class="form-control mb-3"
+                           placeholder="Task Title">
 
-    <br><br>
+                    <input type="text"
+                           name="assigned_to"
+                           class="form-control mb-3"
+                           placeholder="Assigned User">
 
-    <button type="submit">Create Task</button>
+                    <select name="status"
+                            class="form-control mb-3">
 
-</form>
+                        <option>Pending</option>
+                        <option>Completed</option>
+
+                    </select>
+
+                    <button type="submit"
+                            class="btn btn-success w-100">
+                        Create Task
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
 
 </body>
 </html>
