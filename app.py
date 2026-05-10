@@ -1,7 +1,9 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, session
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+
+app.secret_key = "teamtasksecret"
 
 # DATABASE CONFIGURATION
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
@@ -98,12 +100,26 @@ def login():
         ).first()
 
         if user:
+
+            session['user'] = user.name
+            session['role'] = user.role
+
             return redirect('/dashboard')
 
         else:
             return "Invalid Credentials"
 
     return render_template('login.html')
+
+
+# ---------------- LOGOUT ----------------
+
+@app.route('/logout')
+def logout():
+
+    session.clear()
+
+    return redirect('/login')
 
 
 # ---------------- DASHBOARD ----------------
@@ -183,7 +199,7 @@ def tasks():
     return render_template('tasks.html', tasks=all_tasks)
 
 
-# ---------------- RUN APPLICATION ----------------
+# ---------------- RUN APP ----------------
 
 if __name__ == '__main__':
 
