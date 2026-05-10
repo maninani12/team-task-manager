@@ -2,32 +2,76 @@
 <html>
 
 <head>
+
     <title>Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
 </head>
 
-<body>
+<body class="bg-light">
 
-<h1>Dashboard</h1>
+<div class="container mt-5">
 
-<h3>Task Statistics</h3>
+    <h1 class="text-center mb-5">Dashboard</h1>
 
-<p>Total Tasks: {{ total }}</p>
+    <div class="row">
 
-<p>Completed Tasks: {{ completed }}</p>
+        <div class="col-md-4">
 
-<p>Pending Tasks: {{ pending }}</p>
+            <div class="card text-center shadow p-4">
 
-<br>
+                <h3>Total Tasks</h3>
 
-<a href="/create_project">Create Project</a>
+                <h2>{{ total }}</h2>
 
-<br><br>
+            </div>
 
-<a href="/create_task">Create Task</a>
+        </div>
 
-<br><br>
+        <div class="col-md-4">
 
-<a href="/tasks">View Tasks</a>
+            <div class="card text-center shadow p-4">
+
+                <h3>Completed</h3>
+
+                <h2>{{ completed }}</h2>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card text-center shadow p-4">
+
+                <h3>Pending</h3>
+
+                <h2>{{ pending }}</h2>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="text-center mt-5">
+
+        <a href="/create_project" class="btn btn-primary m-2">
+            Create Project
+        </a>
+
+        <a href="/create_task" class="btn btn-success m-2">
+            Create Task
+        </a>
+
+        <a href="/tasks" class="btn btn-dark m-2">
+            View Tasks
+        </a>
+
+    </div>
+
+</div>
 
 </body>
 </html>
