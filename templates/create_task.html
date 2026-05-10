@@ -9,17 +9,35 @@
 
 </head>
 
-<body class="bg-light">
+<body style="background: linear-gradient(to right, #667eea, #764ba2);">
 
-<div class="container mt-5">
+<nav class="navbar navbar-dark bg-dark">
 
-    <div class="row justify-content-center">
+    <div class="container-fluid">
+
+        <a href="/dashboard" class="btn btn-light">
+            Back
+        </a>
+
+        <a href="/logout" class="btn btn-danger">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+<div class="container">
+
+    <div class="row justify-content-center align-items-center vh-100">
 
         <div class="col-md-6">
 
-            <div class="card shadow p-4">
+            <div class="card shadow-lg p-4">
 
-                <h2 class="text-center mb-4">Create Task</h2>
+                <h2 class="text-center mb-4">
+                    Create Task
+                </h2>
 
                 <form method="POST">
 
