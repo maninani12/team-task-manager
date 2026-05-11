@@ -5,10 +5,8 @@ app = Flask(__name__)
 
 app.secret_key = "teamtasksecret"
 
-# DATABASE CONFIGURATION
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 
-# DATABASE OBJECT
 db = SQLAlchemy(app)
 
 # ---------------- USER TABLE ----------------
@@ -34,7 +32,7 @@ class Project(db.Model):
 
     title = db.Column(db.String(100))
 
-    description = db.Column(db.String(200))
+    description = db.Column(db.String(300))
 
 
 # ---------------- TASK TABLE ----------------
@@ -45,19 +43,27 @@ class Task(db.Model):
 
     title = db.Column(db.String(100))
 
+    description = db.Column(db.String(300))
+
+    priority = db.Column(db.String(20))
+
+    due_date = db.Column(db.String(50))
+
     status = db.Column(db.String(50))
 
     assigned_to = db.Column(db.String(100))
 
+    project_name = db.Column(db.String(100))
 
-# ---------------- HOME PAGE ----------------
+
+# ---------------- HOME ----------------
 
 @app.route('/')
 def home():
     return redirect('/login')
 
 
-# ---------------- SIGNUP PAGE ----------------
+# ---------------- SIGNUP ----------------
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -65,8 +71,11 @@ def signup():
     if request.method == 'POST':
 
         name = request.form['name']
+
         email = request.form['email']
+
         password = request.form['password']
+
         role = request.form['role']
 
         new_user = User(
@@ -77,6 +86,7 @@ def signup():
         )
 
         db.session.add(new_user)
+
         db.session.commit()
 
         return redirect('/login')
@@ -84,7 +94,7 @@ def signup():
     return render_template('signup.html')
 
 
-# ---------------- LOGIN PAGE ----------------
+# ---------------- LOGIN ----------------
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -92,6 +102,7 @@ def login():
     if request.method == 'POST':
 
         email = request.form['email']
+
         password = request.form['password']
 
         user = User.query.filter_by(
@@ -102,9 +113,14 @@ def login():
         if user:
 
             session['user'] = user.name
+
             session['role'] = user.role
 
-            return redirect('/dashboard')
+            if user.role == 'admin':
+                return redirect('/admin_dashboard')
+
+            else:
+                return redirect('/member_dashboard')
 
         else:
             return "Invalid Credentials"
@@ -122,10 +138,13 @@ def logout():
     return redirect('/login')
 
 
-# ---------------- DASHBOARD ----------------
+# ---------------- ADMIN DASHBOARD ----------------
 
-@app.route('/dashboard')
-def dashboard():
+@app.route('/admin_dashboard')
+def admin_dashboard():
+
+    if session.get('role') != 'admin':
+        return redirect('/login')
 
     total_tasks = Task.query.count()
 
@@ -134,10 +153,28 @@ def dashboard():
     pending_tasks = Task.query.filter_by(status='Pending').count()
 
     return render_template(
-        'dashboard.html',
+        'admin_dashboard.html',
         total=total_tasks,
         completed=completed_tasks,
         pending=pending_tasks
+    )
+
+
+# ---------------- MEMBER DASHBOARD ----------------
+
+@app.route('/member_dashboard')
+def member_dashboard():
+
+    if session.get('role') != 'member':
+        return redirect('/login')
+
+    my_tasks = Task.query.filter_by(
+        assigned_to=session['user']
+    ).all()
+
+    return render_template(
+        'member_dashboard.html',
+        tasks=my_tasks
     )
 
 
@@ -146,9 +183,13 @@ def dashboard():
 @app.route('/create_project', methods=['GET', 'POST'])
 def create_project():
 
+    if session.get('role') != 'admin':
+        return redirect('/login')
+
     if request.method == 'POST':
 
         title = request.form['title']
+
         description = request.form['description']
 
         new_project = Project(
@@ -157,9 +198,10 @@ def create_project():
         )
 
         db.session.add(new_project)
+
         db.session.commit()
 
-        return redirect('/dashboard')
+        return redirect('/admin_dashboard')
 
     return render_template('create_project.html')
 
@@ -169,24 +211,48 @@ def create_project():
 @app.route('/create_task', methods=['GET', 'POST'])
 def create_task():
 
+    if session.get('role') != 'admin':
+        return redirect('/login')
+
+    users = User.query.filter_by(role='member').all()
+
+    projects = Project.query.all()
+
     if request.method == 'POST':
 
         title = request.form['title']
-        status = request.form['status']
+
+        description = request.form['description']
+
+        priority = request.form['priority']
+
+        due_date = request.form['due_date']
+
         assigned_to = request.form['assigned_to']
+
+        project_name = request.form['project_name']
 
         new_task = Task(
             title=title,
-            status=status,
-            assigned_to=assigned_to
+            description=description,
+            priority=priority,
+            due_date=due_date,
+            status='Pending',
+            assigned_to=assigned_to,
+            project_name=project_name
         )
 
         db.session.add(new_task)
+
         db.session.commit()
 
         return redirect('/tasks')
 
-    return render_template('create_task.html')
+    return render_template(
+        'create_task.html',
+        users=users,
+        projects=projects
+    )
 
 
 # ---------------- VIEW TASKS ----------------
@@ -194,9 +260,53 @@ def create_task():
 @app.route('/tasks')
 def tasks():
 
+    if session.get('role') != 'admin':
+        return redirect('/login')
+
     all_tasks = Task.query.all()
 
-    return render_template('tasks.html', tasks=all_tasks)
+    return render_template(
+        'tasks.html',
+        tasks=all_tasks
+    )
+
+
+# ---------------- UPDATE TASK ----------------
+
+@app.route('/update_task/<int:id>', methods=['GET', 'POST'])
+def update_task(id):
+
+    task = Task.query.get(id)
+
+    if request.method == 'POST':
+
+        task.status = request.form['status']
+
+        db.session.commit()
+
+        return redirect('/member_dashboard')
+
+    return render_template(
+        'update_task.html',
+        task=task
+    )
+
+
+# ---------------- DELETE TASK ----------------
+
+@app.route('/delete_task/<int:id>')
+def delete_task(id):
+
+    if session.get('role') != 'admin':
+        return redirect('/login')
+
+    task = Task.query.get(id)
+
+    db.session.delete(task)
+
+    db.session.commit()
+
+    return redirect('/tasks')
 
 
 # ---------------- RUN APP ----------------
