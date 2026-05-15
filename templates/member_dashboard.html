@@ -19,7 +19,8 @@
 Member Dashboard
 </span>
 
-<a href="/logout" class="btn btn-danger">
+<a href="/logout"
+class="btn btn-danger">
 Logout
 </a>
 
@@ -29,11 +30,11 @@ Logout
 
 <div class="container mt-5">
 
-<h2 class="text-center mb-5 text-white">
+<h2 class="text-center text-white mb-5">
 My Assigned Tasks
 </h2>
 
-<div class="card shadow p-4">
+<div class="card shadow-lg p-4">
 
 <table class="table table-bordered table-hover">
 
@@ -45,7 +46,8 @@ My Assigned Tasks
 <th>Priority</th>
 <th>Status</th>
 <th>Due Date</th>
-<th>Action</th>
+<th>Work Note</th>
+<th>Update</th>
 
 </tr>
 
@@ -65,10 +67,12 @@ My Assigned Tasks
 
 <td>{{ task.due_date }}</td>
 
+<td>{{ task.work_note }}</td>
+
 <td>
 
 <a href="/update_task/{{ task.id }}"
-   class="btn btn-success btn-sm">
+class="btn btn-success btn-sm">
 Update
 </a>
 
