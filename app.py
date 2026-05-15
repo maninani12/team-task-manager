@@ -62,6 +62,10 @@ class Task(db.Model):
 
     project_name = db.Column(db.String(100))
 
+    task_active = db.Column(db.String(20))
+
+    admin_review = db.Column(db.String(300))
+
 
 # ---------------- CREATE DATABASE ----------------
 
@@ -267,7 +271,9 @@ def create_task():
             status='Pending',
             work_note='',
             assigned_to=assigned_to,
-            project_name=project_name
+            project_name=project_name,
+            task_active='Yes',
+            admin_review=''
         )
 
         db.session.add(new_task)
@@ -299,12 +305,61 @@ def tasks():
     )
 
 
+# ---------------- ADMIN UPDATE TASK ----------------
+
+@app.route('/admin_update_task/<int:id>', methods=['POST'])
+def admin_update_task(id):
+
+    if session.get('role') != 'admin':
+        return redirect('/login')
+
+    task = Task.query.get(id)
+
+    task.title = request.form['title']
+
+    task.description = request.form['description']
+
+    task.assigned_to = request.form['assigned_to']
+
+    task.priority = request.form['priority']
+
+    task.start_date = request.form['start_date']
+
+    task.due_date = request.form['due_date']
+
+    task.admin_review = request.form['admin_review']
+
+    db.session.commit()
+
+    return redirect('/tasks')
+
+
+# ---------------- DISABLE TASK ----------------
+
+@app.route('/disable_task/<int:id>')
+def disable_task(id):
+
+    if session.get('role') != 'admin':
+        return redirect('/login')
+
+    task = Task.query.get(id)
+
+    task.task_active = 'No'
+
+    db.session.commit()
+
+    return redirect('/tasks')
+
+
 # ---------------- UPDATE TASK ----------------
 
 @app.route('/update_task/<int:id>', methods=['GET', 'POST'])
 def update_task(id):
 
     task = Task.query.get(id)
+
+    if task.task_active == 'No':
+        return "Task disabled by admin"
 
     if request.method == 'POST':
 
@@ -322,6 +377,23 @@ def update_task(id):
     )
 
 
+# ---------------- DELETE TASK ----------------
+
+@app.route('/delete_task/<int:id>')
+def delete_task(id):
+
+    if session.get('role') != 'admin':
+        return redirect('/login')
+
+    task = Task.query.get(id)
+
+    db.session.delete(task)
+
+    db.session.commit()
+
+    return redirect('/tasks')
+
+
 # ---------------- MANAGE USERS ----------------
 
 @app.route('/manage_users')
@@ -332,7 +404,10 @@ def manage_users():
 
     users = User.query.all()
 
-    return render_template('manage_users.html', users=users)
+    return render_template(
+        'manage_users.html',
+        users=users
+    )
 
 
 # ---------------- CHANGE ROLE ----------------
@@ -347,6 +422,7 @@ def change_role(id):
 
     if user.role == 'member':
         user.role = 'admin'
+
     else:
         user.role = 'member'
 
@@ -370,23 +446,6 @@ def delete_user(id):
     db.session.commit()
 
     return redirect('/manage_users')
-
-
-# ---------------- DELETE TASK ----------------
-
-@app.route('/delete_task/<int:id>')
-def delete_task(id):
-
-    if session.get('role') != 'admin':
-        return redirect('/login')
-
-    task = Task.query.get(id)
-
-    db.session.delete(task)
-
-    db.session.commit()
-
-    return redirect('/tasks')
 
 
 # ---------------- RUN APP ----------------
