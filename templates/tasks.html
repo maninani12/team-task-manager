@@ -168,16 +168,17 @@ Update
 
 {% if task.task_active == 'Yes' %}
 
-<a href="/disable_task/{{ task.id }}"
+<a href="/toggle_task/{{ task.id }}"
 class="btn btn-warning btn-sm mb-2">
-Disable
+Lock
 </a>
 
 {% else %}
 
-<span class="badge bg-danger">
-Locked
-</span>
+<a href="/toggle_task/{{ task.id }}"
+class="btn btn-success btn-sm mb-2">
+Unlock
+</a>
 
 {% endif %}
 
