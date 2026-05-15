@@ -334,17 +334,21 @@ def admin_update_task(id):
     return redirect('/tasks')
 
 
-# ---------------- DISABLE TASK ----------------
+# ---------------- LOCK / UNLOCK TASK ----------------
 
-@app.route('/disable_task/<int:id>')
-def disable_task(id):
+@app.route('/toggle_task/<int:id>')
+def toggle_task(id):
 
     if session.get('role') != 'admin':
         return redirect('/login')
 
     task = Task.query.get(id)
 
-    task.task_active = 'No'
+    if task.task_active == 'Yes':
+        task.task_active = 'No'
+
+    else:
+        task.task_active = 'Yes'
 
     db.session.commit()
 
@@ -359,7 +363,7 @@ def update_task(id):
     task = Task.query.get(id)
 
     if task.task_active == 'No':
-        return "Task disabled by admin"
+        return "Task Locked by Admin"
 
     if request.method == 'POST':
 
