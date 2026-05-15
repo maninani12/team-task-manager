@@ -20,13 +20,13 @@
 <div class="card shadow-lg p-4">
 
 <h2 class="text-center mb-4">
-Update Task Status
+Update Task
 </h2>
 
 <form method="POST">
 
 <select name="status"
-        class="form-control mb-3">
+class="form-control mb-3">
 
 <option>Pending</option>
 <option>In Progress</option>
@@ -34,9 +34,13 @@ Update Task Status
 
 </select>
 
+<textarea name="work_note"
+class="form-control mb-3"
+placeholder="Enter Work Progress"></textarea>
+
 <button type="submit"
-        class="btn btn-primary w-100">
-Update Status
+class="btn btn-primary w-100">
+Update Task
 </button>
 
 </form>
