@@ -16,12 +16,12 @@
 <div class="container-fluid">
 
 <a href="/admin_dashboard"
-   class="btn btn-light">
+class="btn btn-light">
 Back
 </a>
 
 <a href="/logout"
-   class="btn btn-danger">
+class="btn btn-danger">
 Logout
 </a>
 
@@ -44,18 +44,18 @@ Assign Task
 <form method="POST">
 
 <input type="text"
-       name="title"
-       class="form-control mb-3"
-       placeholder="Task Title"
-       required>
+name="title"
+class="form-control mb-3"
+placeholder="Task Title"
+required>
 
 <textarea name="description"
-          class="form-control mb-3"
-          placeholder="Task Description"
-          required></textarea>
+class="form-control mb-3"
+placeholder="Task Description"
+required></textarea>
 
 <select name="priority"
-        class="form-control mb-3">
+class="form-control mb-3">
 
 <option>High</option>
 <option>Medium</option>
@@ -63,13 +63,24 @@ Assign Task
 
 </select>
 
+<label>Start Date</label>
+
 <input type="date"
-       name="due_date"
-       class="form-control mb-3"
-       required>
+name="start_date"
+class="form-control mb-3"
+required>
+
+<label>Due Date</label>
+
+<input type="date"
+name="due_date"
+class="form-control mb-3"
+required>
+
+<label>Assign Member</label>
 
 <select name="assigned_to"
-        class="form-control mb-3">
+class="form-control mb-3">
 
 {% for user in users %}
 
@@ -79,8 +90,10 @@ Assign Task
 
 </select>
 
+<label>Select Project</label>
+
 <select name="project_name"
-        class="form-control mb-3">
+class="form-control mb-3">
 
 {% for project in projects %}
 
@@ -91,7 +104,7 @@ Assign Task
 </select>
 
 <button type="submit"
-        class="btn btn-success w-100">
+class="btn btn-success w-100">
 Assign Task
 </button>
 
