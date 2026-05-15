@@ -61,6 +61,8 @@ Manage Tasks
 
 <th>Status</th>
 
+<th>Member Work Note</th>
+
 <th>Admin Review</th>
 
 <th>Task Control</th>
@@ -145,6 +147,14 @@ value="{{ task.due_date }}">
 <span class="badge bg-primary">
 {{ task.status }}
 </span>
+
+</td>
+
+<td>
+
+<textarea
+class="form-control"
+readonly>{{ task.work_note }}</textarea>
 
 </td>
 
