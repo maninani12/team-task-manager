@@ -20,10 +20,14 @@ class="btn btn-light">
 Back
 </a>
 
+<div>
+
 <a href="/logout"
 class="btn btn-danger">
 Logout
 </a>
+
+</div>
 
 </div>
 
@@ -32,7 +36,7 @@ Logout
 <div class="container mt-5">
 
 <h1 class="text-center mb-5">
-All Tasks
+Manage Tasks
 </h1>
 
 <div class="card shadow-lg p-4">
@@ -44,11 +48,23 @@ All Tasks
 <tr>
 
 <th>Task</th>
-<th>Assigned</th>
+
+<th>Assigned To</th>
+
 <th>Priority</th>
-<th>Start</th>
-<th>Due</th>
+
+<th>Start Date</th>
+
+<th>Due Date</th>
+
 <th>Status</th>
+
+<th>Admin Review</th>
+
+<th>Update</th>
+
+<th>Disable</th>
+
 <th>Delete</th>
 
 </tr>
@@ -73,6 +89,36 @@ All Tasks
 
 <td>{{ task.status }}</td>
 
+<td>{{ task.admin_review }}</td>
+
+<td>
+
+<a href="/admin_update_task/{{ task.id }}"
+class="btn btn-primary btn-sm">
+Update
+</a>
+
+</td>
+
+<td>
+
+{% if task.task_active == 'Yes' %}
+
+<a href="/disable_task/{{ task.id }}"
+class="btn btn-warning btn-sm">
+Disable
+</a>
+
+{% else %}
+
+<span class="badge bg-danger">
+Disabled
+</span>
+
+{% endif %}
+
+</td>
+
 <td>
 
 <a href="/delete_task/{{ task.id }}"
@@ -95,4 +141,5 @@ Delete
 </div>
 
 </body>
+
 </html>
