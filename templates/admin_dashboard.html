@@ -19,9 +19,17 @@
 Admin Dashboard
 </span>
 
+<div>
+
+<a href="/manage_users" class="btn btn-warning">
+Manage Users
+</a>
+
 <a href="/logout" class="btn btn-danger">
 Logout
 </a>
+
+</div>
 
 </div>
 
@@ -31,37 +39,49 @@ Logout
 
 <div class="row">
 
-<div class="col-md-4">
+<div class="col-md-3">
 
 <div class="card shadow p-4 text-center">
 
-<h3>Total Tasks</h3>
+<h4>Total Tasks</h4>
 
-<h1>{{ total }}</h1>
-
-</div>
+<h2>{{ total }}</h2>
 
 </div>
 
-<div class="col-md-4">
+</div>
+
+<div class="col-md-3">
 
 <div class="card shadow p-4 text-center">
 
-<h3>Completed</h3>
+<h4>Completed</h4>
 
-<h1>{{ completed }}</h1>
-
-</div>
+<h2>{{ completed }}</h2>
 
 </div>
 
-<div class="col-md-4">
+</div>
+
+<div class="col-md-3">
 
 <div class="card shadow p-4 text-center">
 
-<h3>Pending</h3>
+<h4>Pending</h4>
 
-<h1>{{ pending }}</h1>
+<h2>{{ pending }}</h2>
+
+</div>
+
+</div>
+
+<div class="col-md-3">
+
+<div class="card shadow p-4 text-center">
+
+<h4>Total Users</h4>
+
+<h2>{{ users }}</h2>
 
 </div>
 
