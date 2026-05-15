@@ -57,6 +57,12 @@ class Task(db.Model):
     project_name = db.Column(db.String(100))
 
 
+# ---------------- CREATE DATABASE ----------------
+
+with app.app_context():
+    db.create_all()
+
+
 # ---------------- HOME ----------------
 
 @app.route('/')
@@ -313,9 +319,6 @@ def delete_task(id):
 # ---------------- RUN APP ----------------
 
 if __name__ == '__main__':
-
-    with app.app_context():
-        db.create_all()
 
     port = int(os.environ.get('PORT', 5000))
 
