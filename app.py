@@ -8,6 +8,8 @@ app.secret_key = "teamtasksecret"
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
 
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
 db = SQLAlchemy(app)
 
 # ---------------- USER TABLE ----------------
@@ -48,9 +50,13 @@ class Task(db.Model):
 
     priority = db.Column(db.String(20))
 
+    start_date = db.Column(db.String(50))
+
     due_date = db.Column(db.String(50))
 
     status = db.Column(db.String(50))
+
+    work_note = db.Column(db.String(500))
 
     assigned_to = db.Column(db.String(100))
 
@@ -84,6 +90,11 @@ def signup():
         password = request.form['password']
 
         role = request.form['role']
+
+        check_user = User.query.filter_by(email=email).first()
+
+        if check_user:
+            return "User already exists"
 
         new_user = User(
             name=name,
@@ -159,11 +170,14 @@ def admin_dashboard():
 
     pending_tasks = Task.query.filter_by(status='Pending').count()
 
+    total_users = User.query.count()
+
     return render_template(
         'admin_dashboard.html',
         total=total_tasks,
         completed=completed_tasks,
-        pending=pending_tasks
+        pending=pending_tasks,
+        users=total_users
     )
 
 
@@ -233,18 +247,25 @@ def create_task():
 
         priority = request.form['priority']
 
+        start_date = request.form['start_date']
+
         due_date = request.form['due_date']
 
-        assigned_to = request.form['assigned_to']
+        assigned_to = request.form.get('assigned_to')
 
-        project_name = request.form['project_name']
+        project_name = request.form.get('project_name')
+
+        if not assigned_to or not project_name:
+            return "Please create member account and project first"
 
         new_task = Task(
             title=title,
             description=description,
             priority=priority,
+            start_date=start_date,
             due_date=due_date,
             status='Pending',
+            work_note='',
             assigned_to=assigned_to,
             project_name=project_name
         )
@@ -289,6 +310,8 @@ def update_task(id):
 
         task.status = request.form['status']
 
+        task.work_note = request.form['work_note']
+
         db.session.commit()
 
         return redirect('/member_dashboard')
@@ -297,6 +320,56 @@ def update_task(id):
         'update_task.html',
         task=task
     )
+
+
+# ---------------- MANAGE USERS ----------------
+
+@app.route('/manage_users')
+def manage_users():
+
+    if session.get('role') != 'admin':
+        return redirect('/login')
+
+    users = User.query.all()
+
+    return render_template('manage_users.html', users=users)
+
+
+# ---------------- CHANGE ROLE ----------------
+
+@app.route('/change_role/<int:id>')
+def change_role(id):
+
+    if session.get('role') != 'admin':
+        return redirect('/login')
+
+    user = User.query.get(id)
+
+    if user.role == 'member':
+        user.role = 'admin'
+    else:
+        user.role = 'member'
+
+    db.session.commit()
+
+    return redirect('/manage_users')
+
+
+# ---------------- DELETE USER ----------------
+
+@app.route('/delete_user/<int:id>')
+def delete_user(id):
+
+    if session.get('role') != 'admin':
+        return redirect('/login')
+
+    user = User.query.get(id)
+
+    db.session.delete(user)
+
+    db.session.commit()
+
+    return redirect('/manage_users')
 
 
 # ---------------- DELETE TASK ----------------
